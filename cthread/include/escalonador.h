@@ -21,3 +21,6 @@ int init_escalonador(escalonador* esc);
 
 /* Poe  uma thread na fila de aptos correspondente à sua prioridade */
 int put_aptos(TCB_t newThread);
+
+/* Inicializa a biblioteca. É chamada no primeiro uso da CThreads. */
+int init_lib(TCB_t* main_thread, escalonador* esc);
