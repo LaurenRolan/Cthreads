@@ -36,3 +36,13 @@ int put_aptos(TCB_t* newThread){
 	
 	return SUCESSO;
 }
+
+int init_lib(TCB_t* main_thread, escalonador* esc) {
+	if(init_escalonador(&esc) != SUCESSO){
+		return ERRO_INIT;
+	}
+	
+	makecontext(&main_thread, (void (*)(void)) main, 0); //tenho dúvidas aqui sobre como passar a função
+	
+	return SUCESSO;
+}
