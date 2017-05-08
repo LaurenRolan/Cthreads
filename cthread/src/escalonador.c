@@ -37,7 +37,7 @@ int put_aptos(TCB_t* newThread){
 	return SUCESSO;
 }
 
-int init_lib(TCB_t* main_thread, escalonador* esc) {
+int init_lib(ucontext_t main_thread, escalonador* esc) {
 	if(init_escalonador(&esc) != SUCESSO){
 		return ERRO_INIT;
 	}
