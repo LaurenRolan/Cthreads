@@ -11,23 +11,19 @@
 # 
 
 CC=gcc
+CFLAGS=-Wall -g
 LIB_DIR=./lib
 INC_DIR=./include
 BIN_DIR=./bin
 SRC_DIR=./src
+SUP_DIR=./support
 
-all: regra1 regra2 regran
+all: 
 
-regra1: #dependências para a regra1
-	$(CC) -o $(BIN_DIR)regra1 $(SRC_DIR)regra1.c -Wall
-
-regra2: #dependências para a regra2
-	$(CC) -o $(BIN_DIR)regra2 $(SRC_DIR)regra2.c -Wall
-
-regran: #dependências para a regran
-	$(CC) -o $(BIN_DIR)regran $(SRC_DIR)regran.c -Wall
+escalonador.o: $(SRC_DIR)/escalonador.c $(BIN_DIR)/support.o
+	$(CC) $(CFLAGS) -o $(BIN_DIR)/escalonador.o $(BIN_DIR)/support.o -I$(INC_DIR) $(SRC_DIR)/escalonador.c
 
 clean:
-	rm -rf $(LIB_DIR)/*.a $(BIN_DIR)/*.o $(SRC_DIR)/*~ $(INC_DIR)/*~ *~
+	rm -rf $(LIB_DIR)/*.a $(BIN_DIR)/*.o $(SRC_DIR)/*~ $(INC_DIR)/*~ *~ && cp $(SUP_DIR)/support.o $(BIN_DIR)/support.o
 
 
