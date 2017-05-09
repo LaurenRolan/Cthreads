@@ -1,4 +1,6 @@
 #include <"../include/escalonador.h">
+#include <"../include/support.h">
+#include <"../include/cdata.h">
 #include <stdio.h>
 
 
