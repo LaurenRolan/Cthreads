@@ -24,7 +24,7 @@ int init_escalonador(){
 }
 
 /* Poe  uma thread na fila de aptos correspondente à sua prioridade */
-int put_aptos(TCB_t* newThread, escalonador* esc){
+int put_aptos(TCB_t* newThread){ //tirei o esc
 
 	if(newThread == NULL){
 		printf("Estrutura recebida para insercao na fila de aptos tem valor %p\n", newThread);
@@ -38,16 +38,6 @@ int put_aptos(TCB_t* newThread, escalonador* esc){
 			return ERRO_INSERCAO;
 		}
 	}
-	
-	return SUCESSO;
-}
-
-int init_lib(ucontext_t* main_thread, escalonador* esc) {
-	if(init_escalonador(esc) != SUCESSO){
-		return ERRO_INIT;
-	}
-	
-	//makecontext(main_thread, (void (*)(void)) main, 0); //tenho dúvidas aqui sobre como passar a função
 	
 	return SUCESSO;
 }
