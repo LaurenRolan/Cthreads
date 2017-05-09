@@ -16,7 +16,6 @@ LIB_DIR=./lib
 INC_DIR=./include
 BIN_DIR=./bin
 SRC_DIR=./src
-SUP_DIR=./support
 
 all: 
 
@@ -24,6 +23,4 @@ escalonador.o: $(SRC_DIR)/escalonador.c
 	$(CC) $(CFLAGS) -I$(INC_DIR) -c $(SRC_DIR)/escalonador.c -o  $(BIN_DIR)/escalonador.o
 
 clean:
-	rm -rf $(LIB_DIR)/*.a $(BIN_DIR)/*.o $(SRC_DIR)/*~ $(INC_DIR)/*~ *~ && cp $(SUP_DIR)/support.o $(BIN_DIR)/support.o
-
-
+	rm -rf $(LIB_DIR)/*.a $(SRC_DIR)/*~ $(INC_DIR)/*~ *~ ; cp $(BIN_DIR)/support.o $(INC_DIR)/support.o ; rm -rf  $(BIN_DIR)/*.o ; mv $(INC_DIR)/support.o $(BIN_DIR)/support.o
