@@ -19,9 +19,9 @@ typedef struct s_escalonador{
 }escalonador;
 
 /* Inicializa a estrutura necessaria ao escalonador */
-int init_escalonador(escalonador* esc);
+int init_escalonador();
 
 /* Poe  uma thread na fila de aptos correspondente à sua prioridade */
-int put_aptos(TCB_t *newThread, escalonador *esc);
+int put_aptos(TCB_t *newThread);
 
 
