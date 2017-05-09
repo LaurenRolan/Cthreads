@@ -20,8 +20,8 @@ SUP_DIR=./support
 
 all: 
 
-escalonador.o: $(SRC_DIR)/escalonador.c $(BIN_DIR)/support.o
-	$(CC) $(CFLAGS) -o $(BIN_DIR)/escalonador.o $(BIN_DIR)/support.o -I$(INC_DIR) $(SRC_DIR)/escalonador.c
+escalonador.o: $(SRC_DIR)/escalonador.c
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $(SRC_DIR)/escalonador.c -o  $(BIN_DIR)/escalonador.o
 
 clean:
 	rm -rf $(LIB_DIR)/*.a $(BIN_DIR)/*.o $(SRC_DIR)/*~ $(INC_DIR)/*~ *~ && cp $(SUP_DIR)/support.o $(BIN_DIR)/support.o
