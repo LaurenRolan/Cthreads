@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ucontext.h>
 #include "escalonador.h"
 
 escalonador* esc;
@@ -68,4 +69,18 @@ int dispatcher(){
 	}
 	
 	return ERRO; //não existe nenhuma thread apta no momento
+}
+
+int init_lib() {
+	ucontext_t c;
+	TCB_t *t;
+	t = malloc(sizeof(TCB_t));
+	t->ticket = 0;
+	t->state = PROCST_EXEC;
+	t->tid = 0; 
+	t->context = c;
+	if(init_escalonador()!= SUCESSO) return ERRO;
+	esc->executando = t;
+	return SUCESSO;
+	
 }
