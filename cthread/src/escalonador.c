@@ -9,21 +9,23 @@ escalonador* esc;
 int init_escalonador(){
 	int i;
 
-	esc = malloc(sizeof(escalonador));	
-	esc->bloq_join = malloc(sizeof(PFILA2));
-	esc->semaforos = malloc(sizeof(PFILA2));
-	esc->executando = malloc(sizeof(TCB_t));
+	if(esc == NULL){
+		esc = malloc(sizeof(escalonador));	
+		esc->bloq_join = malloc(sizeof(PFILA2));
+		esc->semaforos = malloc(sizeof(PFILA2));
+		esc->executando = malloc(sizeof(TCB_t));
 	
-	for(i = 0; i < PRIORIDADES; i++)
-		esc->aptos[i] = malloc(sizeof(PFILA2));
-
-	if(CreateFila2(esc->bloq_join) != 0)
-		return ERRO;
-	if(CreateFila2(esc->semaforos) != 0)
-		return ERRO;
-	for(i = 0; i < PRIORIDADES; i++)
-		if(CreateFila2(esc->aptos[i]) != 0)
+		for(i = 0; i < PRIORIDADES; i++)
+			esc->aptos[i] = malloc(sizeof(PFILA2));
+	
+		if(CreateFila2(esc->bloq_join) != 0)
 			return ERRO;
+		if(CreateFila2(esc->semaforos) != 0)
+			return ERRO;
+		for(i = 0; i < PRIORIDADES; i++)
+			if(CreateFila2(esc->aptos[i]) != 0)
+				return ERRO;
+	}
 
 	return SUCESSO;
 

@@ -12,7 +12,7 @@
 CC=gcc
 CFLAGS= -Wall -g
 
-TARGET= T_csem_init
+TARGET= T_put_aptos
 
 LIB_DIR=../lib
 INC_DIR=../include
