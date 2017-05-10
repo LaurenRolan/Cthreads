@@ -8,7 +8,7 @@ int main(){
 	ucontext_t context;
 
 	thread.tid = 0;
-	thread.state = PROCST_APTO;
+	thread.state = PROCST_EXEC;
 	thread.prio = 0;
 	thread.context = context;
 

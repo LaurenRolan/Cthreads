@@ -36,7 +36,7 @@ int put_aptos(TCB_t* newThread){ //tirei o esc
 		return ERRO_INSERCAO;
 	}
 	else{
-		/****** Review this later, not sure if needs to do malloc of a NODE2 first, the documentatin isnt really clear about this */
+		newThread->state = PROCST_APTO;
 
 		if(AppendFila2(esc->aptos[newThread->prio], (void *)newThread) != 0){
 			printf("Erro na insercao de %p na fila de aptos\n", newThread);
