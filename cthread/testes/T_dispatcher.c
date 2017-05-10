@@ -18,7 +18,7 @@ int main(){
 	init_escalonador();
 
 	t.tid = 0;
-	t.prio = 0;
+	t.ticket = 0;
 	t.state = PROCST_APTO;	
 
 	char stack[SIGSTKSZ];

@@ -9,7 +9,7 @@ int main(){
 
 	thread.tid = 0;
 	thread.state = PROCST_EXEC;
-	thread.prio = 0;
+	thread.ticket = 0;
 	thread.context = context;
 
 	if(init_escalonador() != 0)
@@ -25,7 +25,7 @@ int main(){
 	TCB_t* t;
 	t = (TCB_t*) GetAtIteratorFila2(esc->aptos[0]);
 
-	if(t->tid == 0 && t->state == PROCST_APTO && t->prio == 0 )
+	if(t->tid == 0 && t->state == PROCST_APTO && t->ticket == 0 )
 		printf("Dados retornados corretamente. \n");
 	
 	return 0;

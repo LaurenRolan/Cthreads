@@ -38,7 +38,7 @@ int put_aptos(TCB_t* newThread){
 	else{
 		newThread->state = PROCST_APTO;
 
-		if(AppendFila2(esc->aptos[newThread->prio], (void *)newThread) != 0){
+		if(AppendFila2(esc->aptos[newThread->ticket], (void *)newThread) != 0){
 			printf("Erro na insercao de %p na fila de aptos\n", newThread);
 			return ERRO;
 		}
