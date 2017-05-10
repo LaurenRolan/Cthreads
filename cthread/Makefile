@@ -24,6 +24,9 @@ escalonador.o: $(SRC_DIR)/escalonador.c
 
 cthread.o: $(INC_DIR)/cthread.h
 	$(CC) $(CFLAGS) -I$(INC_DIR) -c $(INC_DIR)/cthread.h -o  $(BIN_DIR)/cthread.o
+	
+semaforo.o: $(SRC_DIR)/semaforo.c #Não testei assim, mas creio que funcione#
+	$(CC) $(CFLAGS) -I$(INC_DIR) -c $(SRC_DIR)/semaforo.c -o  $(BIN_DIR)/semaforo.o
 
 clean:
 	rm -rf $(LIB_DIR)/*.a $(SRC_DIR)/*~ $(INC_DIR)/*~ *~ ; cp $(BIN_DIR)/support.o $(INC_DIR)/support.o ; rm -rf  $(BIN_DIR)/*.o ; mv $(INC_DIR)/support.o $(BIN_DIR)/support.o
