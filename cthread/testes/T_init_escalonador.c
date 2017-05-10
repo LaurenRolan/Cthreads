@@ -4,10 +4,11 @@
 #include "../include/escalonador.h"
 
 int main(){
-	escalonador esc;	
-
-	if( init_escalonador(&esc) != 0 )
+	
+	if( init_escalonador() != 0 )
 		printf("Erro no teste da funcao init_escalonador\n");
+	else
+		printf("Sucesso no teste da funcao init_escalonador\n");
 
 	return 0;		
 }

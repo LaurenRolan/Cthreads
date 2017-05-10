@@ -8,8 +8,6 @@
 #define SUCESSO 0
 #define PRIORIDADES 4
 
-extern escalonador* esc;
-
 typedef struct s_escalonador{
 
 	PFILA2 bloq_join;
@@ -17,6 +15,8 @@ typedef struct s_escalonador{
 	PFILA2 aptos[PRIORIDADES]; 
 
 }escalonador;
+
+extern escalonador* esc;
 
 /* Inicializa a estrutura necessaria ao escalonador */
 int init_escalonador();

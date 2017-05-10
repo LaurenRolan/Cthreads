@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "escalonador.h"
-escalonador* esc
+
+escalonador* esc;
+
 /* Inicializa a estrutura necessaria ao escalonador */
 int init_escalonador(){
 	int i;
-	esc = malloc(sizeof(escalonador));
+
+	esc = malloc(sizeof(escalonador));	
 	esc->bloq_join = malloc(sizeof(PFILA2));
 	esc->semaforos = malloc(sizeof(PFILA2));
 	for(i = 0; i < PRIORIDADES; i++)

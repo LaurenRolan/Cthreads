@@ -2,9 +2,12 @@
 # Makefile para testes
 # 
 # Como usar:
-# Bote o nome do arquivo.c em TARGET
+# Bote o nome do arquivo.c em TARGET (mas sem o .c)
 # É isso.
-#
+# Na real, se vocês nunca usaram Makefile:
+# 1º) make clean
+# 2º) make all
+# É isso aí mesmo.
 
 CC=gcc
 CFLAGS= -Wall -g

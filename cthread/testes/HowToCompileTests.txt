@@ -1,2 +1,0 @@
-gcc -g -c T_init_escalonador.c
-gcc -g -o T_init_escalonador T_init_escalonador.o ../bin/escalonador.o ../bin/support.o
