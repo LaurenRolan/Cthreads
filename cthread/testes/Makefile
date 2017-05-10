@@ -24,8 +24,8 @@ all: $(TARGET).o $(TARGET)
 $(TARGET).o: $(TARGET).c
 	$(CC) $(CFLAGS) -c $(TARGET).c
 
-$(TARGET): $(TARGET).o $(BIN_DIR)/escalonador.o $(BIN_DIR)/support.o
-	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).o  $(BIN_DIR)/escalonador.o $(BIN_DIR)/support.o
+$(TARGET): $(TARGET).o $(BIN_DIR)/escalonador.o $(BIN_DIR)/support.o $(BIN_DIR)/cthread.o
+	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).o  $(BIN_DIR)/escalonador.o $(BIN_DIR)/support.o $(BIN_DIR)/cthread.o
 
 clean:
 	rm -rf *.o *~ $(TARGET)
