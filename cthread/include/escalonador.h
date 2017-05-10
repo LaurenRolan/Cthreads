@@ -26,3 +26,6 @@ int put_aptos(TCB_t *newThread);
 
 /* Dispatcher é responsável por escolher qual a próxima thread que irá executar */
 int dispatcher();
+
+/*Quando a primeira chamada pe efetuada, a biblioteca é inicializada*/
+int init_lib();
