@@ -3,8 +3,7 @@
 #include "support.h"
 #include "cdata.h"
 
-#define ERRO_INSERCAO -1
-#define ERRO_INIT -1
+#define ERRO -1
 #define SUCESSO 0
 #define PRIORIDADES 4
 
@@ -25,4 +24,5 @@ int init_escalonador();
 /* Poe  uma thread na fila de aptos correspondente à sua prioridade */
 int put_aptos(TCB_t *newThread);
 
-
+/* Dispatcher é responsável por escolher qual a próxima thread que irá executar */
+int dispatcher();

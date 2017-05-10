@@ -8,8 +8,8 @@ escalonador* esc;
 int csem_init(csem_t *sem, int count){
     sem = malloc(sizeof(csem_t));
 	sem->count = count;
-	if(esc != NULL && AppendFila2(esc->semaforos, &sem)!=0){ //oremos para que não dê erríneos
-        return ERRO_INIT;
+	if(esc == NULL || AppendFila2(esc->semaforos, &sem)!=0){ //oremos para que não dê erríneos
+        	return ERRO;
 	}
 	return SUCESSO;
 }
