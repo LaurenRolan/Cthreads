@@ -7,7 +7,7 @@ int main(){
 	if(esc==NULL) printf("Escalonador não alocado\n");
 	/*Teste sem escalonador alocado. Deve gerar erro.*/
 	if(csem_init(&semaforo, 3) == SUCESSO) printf("Funcionou, mas nao deveria.\n");
-	else print("Passou no teste 1.\n");
+	else printf("Passou no teste 1.\n");
 
     /*Teste com o escalonador alocado. Deve funcionar.*/
 	if( init_escalonador() != 0 )
