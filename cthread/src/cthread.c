@@ -50,6 +50,13 @@ int csem_init(csem_t *sem, int count){
 	return SUCESSO;
 }
 
+int cyield(){
+	TCB_t * TCB;
+	TCB = esc->executando;
+	put_aptos(TCB);
+	dispatcher();
+}
+
 int cwait(csem_t *sem){
     return 0;
 }
