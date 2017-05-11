@@ -43,8 +43,9 @@ int csem_init(csem_t *sem, int count){
 		init_lib();	
 
 	sem = malloc(sizeof(csem_t));
+	sem->fila = malloc(sizeof(PFILA2));
 	sem->count = count;
-	if(esc == NULL || AppendFila2(esc->semaforos, &sem)!=0){ //oremos para que não dê erríneos
+	if(AppendFila2(esc->semaforos, sem) != 0){
         	return ERRO;
 	}
 	return SUCESSO;
