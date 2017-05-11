@@ -87,7 +87,7 @@ int csignal(csem_t *sem){
 
 int cidentify (char *name, int size){
 
-	char *str = "\tLauren Silva Rolan Sampaio - ........\n\tLeonardo da Luz Dorneles - 00262516\n\tNatalia Gubiani Rampon - 00262512\n";
+	char *str = "\tLauren Silva Rolan Sampaio - 00262517\n\tLeonardo da Luz Dorneles - 00262516\n\tNatalia Gubiani Rampon - 00262512\n";
 
 	//biblioteca ainda não inicializada
 	if(esc == NULL)
