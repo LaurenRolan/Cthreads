@@ -14,6 +14,7 @@ int init_escalonador(){
 		esc->bloq_join = malloc(sizeof(PFILA2));
 		esc->semaforos = malloc(sizeof(PFILA2));
 		esc->executando = malloc(sizeof(TCB_t));
+		esc->tid = 0;
 	
 		for(i = 0; i < PRIORIDADES; i++)
 			esc->aptos[i] = malloc(sizeof(PFILA2));

@@ -6,6 +6,36 @@
 
 escalonador* esc;
 
+int ccreate (void* (*start)(void*), void *arg, int prio){
+
+	//biblioteca ainda não inicializada
+	if(esc == NULL)
+		init_lib();
+
+	TCB_t* t;
+	ucontext_t c;
+	char stack[SIGSTKSZ];	
+
+	t = malloc(sizeof(TCB_t));
+	t->ticket = prio;
+	esc->tid = esc->tid + 1;
+	t->tid = esc->tid;
+	t->state = PROCST_CRIACAO;
+
+	getcontext(&c);
+	c.uc_stack.ss_sp = stack;
+	c.uc_stack.ss_size = sizeof(stack);
+
+	makecontext(&c, (void (*)(void))start, 1, arg);
+	t->context = c;
+	
+	if(put_aptos(t) != 0)
+		return ERRO;
+	
+	return SUCESSO;
+
+}
+
 int csem_init(csem_t *sem, int count){
     
 	//biblioteca ainda não inicializada	

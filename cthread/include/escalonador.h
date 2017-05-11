@@ -13,6 +13,7 @@ typedef struct s_escalonador{
 	PFILA2 semaforos;
 	PFILA2 aptos[PRIORIDADES]; 
 	TCB_t* executando;
+	int tid;
 
 }escalonador;
 
