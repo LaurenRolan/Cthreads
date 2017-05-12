@@ -19,13 +19,16 @@ INC_DIR=../include
 BIN_DIR=../bin
 SRC_DIR=../src
 
-all: $(TARGET).o $(TARGET)
+all: bib  $(TARGET).o $(TARGET)
 
 $(TARGET).o: $(TARGET).c
 	$(CC) $(CFLAGS) -c $(TARGET).c
 
 $(TARGET): $(TARGET).o $(BIN_DIR)/escalonador.o $(BIN_DIR)/support.o $(BIN_DIR)/cthread.o
 	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).o  $(BIN_DIR)/escalonador.o $(BIN_DIR)/support.o $(BIN_DIR)/cthread.o
+
+bib: 
+	$(MAKE) -C ../
 
 clean:
 	rm -rf *.o *~ $(TARGET)
