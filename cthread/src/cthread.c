@@ -78,11 +78,54 @@ int cjoin(int tid){
   	}
 }
 
-int cwait(csem_t *sem){
-    return 0;
+int cwait(csem_t *sem){ //não testada
+    	if(sem->count > 0) {
+		sem->count --;
+		return SUCESSO;
+	}
+	if(AppendFila2(sem->fila,(void *) esc->executando) != 0) {
+		printf("Erro ao inserir na fila de bloqueados.\n");
+		return ERRO;
+	}
+	esc->executando->state = PROCST_BLOQ;
+	if(dispatcher() != ERRO) return SUCESSO;
+	return ERRO;
 }
-int csignal(csem_t *sem){
-    return 0;
+
+int csignal(csem_t *sem){ //Não testada
+	csem_t *atual;
+	atual = malloc(sizeof(csem_t));
+	
+	//Biblioteca não inicializada, não há semáforo algum.
+    	if(esc==NULL) return ERRO;
+	
+	//Verifica o primeiro da fila
+	FirstFila2(esc->semaforos);
+	atual = (csem_t*) GetAtIteratorFila2(esc->semaforos);
+	while(achou != 1 && atual != NULL){
+		if(atual == sem) {
+			//Pega a 1ª thread da fila do semáforo e a põe em aptos
+			FirstFila2(sem->fila);
+			if(put_aptos((TCB_t*)GetAtIteratorFila2(sem->fila))!=SUCESSO)
+				printf("Erro ao inserir a thread em aptos.\n");
+			DeleteAtIteratorFila2(sem->fila);
+			sem->count ++;
+			achou = 1;
+		}
+		else {
+			//Passa para o próximo da fila
+			NextFila2(esc->semaforos);
+			atual = (csem_t*) GetAtIteratorFila2(esc->semaforos);
+		}
+	}
+	if(achou!=1) {
+		printf("Semaforo inserido nao existe.\n");
+		return ERRO;
+	}
+
+	free(atual);
+
+	return SUCESSO;
 }
 
 int cidentify (char *name, int size){
