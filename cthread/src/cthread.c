@@ -63,9 +63,9 @@ int cjoin(int tid){
   	int controle = 1;
 	TCB = esc->executando;
 	TCB->state = PROCST_BLOQ;
-	appendFila2(esc->bloq_join, TCB);
+	AppendFila2(esc->bloq_join, TCB);
   	//procurar por thread nas estruturas disponíveis ---> TCB_t *searchThread(int tid)
-	getcontext(&(SearchResultThread->context.uc_link));
+	//getcontext(&(SearchResultThread->context.uc_link));
   //a ideia era mudar o uc_link e fazer voltar pra cá quando "thread" terminar (n sei fazer isso)
   
   	if(controle == 1){
