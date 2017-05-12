@@ -36,7 +36,7 @@ int ccreate (void* (*start)(void*), void *arg, int prio){
 
 }
 
-int csem_init(csem_t *sem, int count){
+int csem_init(csem_t *sem, int count){ //Não funciona como deveria
     
 	//biblioteca ainda não inicializada	
 	if(esc == NULL)
@@ -95,7 +95,7 @@ int cwait(csem_t *sem){ //não testada
 int csignal(csem_t *sem){ //Não testada
 	csem_t *atual;
 	atual = malloc(sizeof(csem_t));
-	
+	int achou = 0;
 	//Biblioteca não inicializada, não há semáforo algum.
     	if(esc==NULL) return ERRO;
 	
