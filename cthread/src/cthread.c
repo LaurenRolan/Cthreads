@@ -91,9 +91,8 @@ int cwait(csem_t *sem){ //não testada
 	return ERRO;
 }
 
-int csignal(csem_t *sem){ //Não testada
+int csignal(csem_t *sem){
 	csem_t *atual;
-	atual = malloc(sizeof(csem_t));
 	int achou = 0;
 	//Biblioteca não inicializada, não há semáforo algum.
     	if(esc==NULL) return ERRO;
@@ -121,9 +120,6 @@ int csignal(csem_t *sem){ //Não testada
 		printf("Semaforo inserido nao existe.\n");
 		return ERRO;
 	}
-
-	free(atual);
-
 	return SUCESSO;
 }
 
