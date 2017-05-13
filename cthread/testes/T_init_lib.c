@@ -7,7 +7,8 @@ int main(){
 	if(init_lib() != SUCESSO) printf("Erro na inicializacao da biblioteca.\n");
 	else {
 		//Verifica se é a main que está "executando"
-		printf("O tid da thread executando e %d\n", esc->executando->tid);
+		if(esc->executando->tid == 0)
+			printf("Sucesso no teste de inicializacao da biblioteca.\n");
 	}
 	return 0;
 }

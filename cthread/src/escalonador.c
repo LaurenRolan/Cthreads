@@ -14,7 +14,6 @@ int init_escalonador(){
 		esc = (escalonador *) malloc(sizeof(escalonador));	
 		esc->bloq_join = (PFILA2) malloc(sizeof(PFILA2));
 		esc->semaforos = (PFILA2) malloc(sizeof(PFILA2));
-		esc->executando = (TCB_t*) malloc(sizeof(TCB_t));
 		esc->tidCounter = 0;
 		
 		getcontext(&contextTerminate);
@@ -101,4 +100,48 @@ int init_lib() {
 void terminate_thread(){
 	
 	return;
+}
+
+TCB_t* search_thread(int tid){
+
+	int i;	
+	TCB_t *t;
+	csem_t* s;
+
+	// Primeiro vê se essa thread é a que está executando
+	if(esc->executando != NULL)
+		if((esc->executando)->tid == tid)
+			return esc->executando;
+	//Procura nas filas de apto
+	for(i = 0; i < PRIORIDADES; i++){
+		if(FirstFila2(esc->aptos[i]) != 0) 
+			continue;			//Essa fila de prioridade está vazia
+		do{
+			t = (TCB_t*) GetAtIteratorFila2(esc->aptos[i]);
+			if(t->tid == tid)
+				return t;
+		}while(!NextFila2(esc->aptos[i]));
+	}
+
+	//Procura na lista de bloqueados por cjoin
+	if(FirstFila2(esc->bloq_join) == 0)
+		do{
+			t = (TCB_t*) GetAtIteratorFila2(esc->bloq_join);
+			if(t->tid == tid)
+				return t;
+		}while(!NextFila2(esc->bloq_join));
+	
+	//Procura na fila de cada semáforo da lista de semáforosi
+	if(FirstFila2(esc->semaforos) == 0)
+		do{
+			s = (csem_t*) GetAtIteratorFila2(esc->semaforos);
+			if(FirstFila2(s->fila) == 0)
+				do{	
+					t = (TCB_t*) GetAtIteratorFila2(s->fila);
+					if(t->tid == tid)
+						return t;
+				}while(!NextFila2(s->fila));			
+		}while(!NextFila2(esc->semaforos));
+	
+	return NULL;
 }

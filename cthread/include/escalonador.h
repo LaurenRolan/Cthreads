@@ -2,6 +2,7 @@
 
 #include "support.h"
 #include "cdata.h"
+#include "cthread.h"
 
 #define ERRO -1
 #define SUCESSO 0
@@ -35,3 +36,5 @@ int init_lib();
 /* Encerração de thread e desalocação de estruturas relacioandas a ela*/
 void terminate_thread();
 
+/* Procura por uma thread a partir de um tid */
+TCB_t* search_thread(int tid);
