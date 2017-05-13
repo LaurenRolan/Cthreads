@@ -36,6 +36,23 @@ int ccreate (void* (*start)(void*), void *arg, int prio){
 
 }
 
+int csetprio(int tid, int prio){
+	
+	TCB_t *t;
+	
+	if(prio < 0 || prio > 3)
+		return ERRO;
+
+	t = search_thread(tid);
+	if(t == NULL)
+		return ERRO;	
+
+	t->ticket = prio;
+
+	return SUCESSO;
+
+}
+
 int csem_init(csem_t *sem, int count){ //Não funciona como deveria
     
 	//biblioteca ainda não inicializada	
