@@ -9,11 +9,12 @@
 
 typedef struct s_escalonador{
 
-	PFILA2 bloq_join;
-	PFILA2 semaforos;
-	PFILA2 aptos[PRIORIDADES]; 
-	TCB_t* executando;
-	int tid;
+	PFILA2 bloq_join;		//lista das threads bloqueadas por cjoin
+	PFILA2 semaforos;		//lista de semaforos do usuário
+	PFILA2 aptos[PRIORIDADES]; 	//quatro filas de prioridade das threads aptas
+	TCB_t* executando;		//TCB do processo executando no momento
+	int tidCounter;			//gerador de IDs de threads
+	ucontext_t terminate; 		//contexto para a função de encerramento de threads
 
 }escalonador;
 
@@ -28,5 +29,9 @@ int put_aptos(TCB_t *newThread);
 /* Dispatcher é responsável por escolher qual a próxima thread que irá executar */
 int dispatcher();
 
-/*Quando a primeira chamada pe efetuada, a biblioteca é inicializada*/
+/* Quando a primeira chamada é efetuada, a biblioteca é inicializada*/
 int init_lib();
+
+/* Encerração de thread e desalocação de estruturas relacioandas a ela*/
+void terminate_thread();
+

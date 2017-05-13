@@ -8,14 +8,22 @@ escalonador* esc;
 /* Inicializa a estrutura necessaria ao escalonador */
 int init_escalonador(){
 	int i;
+	ucontext_t contextTerminate;
 
 	if(esc == NULL){
-		esc = malloc(sizeof(escalonador));	
-		esc->bloq_join = malloc(sizeof(PFILA2));
-		esc->semaforos = malloc(sizeof(PFILA2));
-		esc->executando = malloc(sizeof(TCB_t));
-		esc->tid = 0;
-	
+		esc = (escalonador *) malloc(sizeof(escalonador));	
+		esc->bloq_join = (PFILA2) malloc(sizeof(PFILA2));
+		esc->semaforos = (PFILA2) malloc(sizeof(PFILA2));
+		esc->executando = (TCB_t*) malloc(sizeof(TCB_t));
+		esc->tidCounter = 0;
+		
+		getcontext(&contextTerminate);
+		contextTerminate.uc_stack.ss_sp = (char *)  malloc(SIGSTKSZ);
+		contextTerminate.uc_stack.ss_size = SIGSTKSZ;
+		makecontext(&contextTerminate, (void (*)(void))terminate_thread, 0);
+		
+		esc->terminate = contextTerminate;
+		
 		for(i = 0; i < PRIORIDADES; i++)
 			esc->aptos[i] = malloc(sizeof(PFILA2));
 	
@@ -88,4 +96,9 @@ int init_lib() {
 	esc->executando = t;
 	return SUCESSO;
 	
+}
+
+void terminate_thread(){
+	
+	return;
 }

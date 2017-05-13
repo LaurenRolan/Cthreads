@@ -13,18 +13,18 @@ int ccreate (void* (*start)(void*), void *arg, int prio){
 		init_lib();
 
 	TCB_t* t;
-	ucontext_t c;
-	char stack[SIGSTKSZ];	
+	ucontext_t c;	
 
 	t = malloc(sizeof(TCB_t));
 	t->ticket = prio;
-	esc->tid = esc->tid + 1;
-	t->tid = esc->tid;
+	esc->tidCounter = esc->tidCounter + 1;
+	t->tid = esc->tidCounter;
 	t->state = PROCST_CRIACAO;
 
 	getcontext(&c);
-	c.uc_stack.ss_sp = stack;
-	c.uc_stack.ss_size = sizeof(stack);
+	c.uc_stack.ss_sp = (char *) malloc(SIGSTKSZ);
+	c.uc_stack.ss_size = SIGSTKSZ;
+	c.uc_link = &(esc->terminate);
 
 	makecontext(&c, (void (*)(void))start, 1, arg);
 	t->context = c;
@@ -42,8 +42,7 @@ int csem_init(csem_t *sem, int count){ //Não funciona como deveria
 	if(esc == NULL)
 		init_lib();	
 
-	sem = malloc(sizeof(csem_t));
-	sem->fila = malloc(sizeof(PFILA2));
+	sem->fila = (PFILA2) malloc(sizeof(PFILA2));
 	sem->count = count;
 	if(AppendFila2(esc->semaforos, (void*) sem) != 0){
         	return ERRO;
