@@ -63,16 +63,16 @@ int dispatcher(){
 	
 	int i;
 	TCB_t* temp;
+	TCB_t atual;
+	atual = *(esc->executando);
 	
-	//aqui tem que ter um getcontext(&(esc->executando.context))
-	//tem que ter um if(controle) caso tenhamos uma volta pro getcontext de cima e tem que retornar do dispatcher sem erro
 	for(i=0; i < PRIORIDADES; i++){
 		if(FirstFila2(esc->aptos[i]) != 0 && LastFila2(esc->aptos[i]) != 0)	//Verifica se a fila é vazia
 			continue;
 		if(( temp = (TCB_t*) GetAtIteratorFila2(esc->aptos[i]) ) && temp != NULL){
 			temp->state = PROCST_EXEC;
 			esc->executando = temp;
-			if(setcontext(&(temp->context)) == -1){
+			if(swapcontext(&(atual.context),&(temp->context)) == -1){
 				fprintf(stderr, "Erro ao mudar de contexto no dispatcher. Thread ID %d \n", temp->tid);
 				return ERRO;
 			}
