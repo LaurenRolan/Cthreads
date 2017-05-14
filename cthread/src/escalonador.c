@@ -64,6 +64,7 @@ int dispatcher(){
 	int i;
 	TCB_t* temp;
 	TCB_t atual;
+	//PROBLEMA: quando a thread terminate o esc->executando já foi desalocado
 	atual = *(esc->executando);
 	
 	for(i=0; i < PRIORIDADES; i++){
@@ -99,6 +100,18 @@ int init_lib() {
 
 void terminate_thread(){
 	
+	TCB *t;
+	
+	//atualiza contexto, para próxima vez que vierem pra cá
+	getcontext(&(esc->terminate));
+
+	//desalocar a stack do processo
+	free(esc->executando->context.uc_stack.ss_sp);
+
+	//desalocar TCB 
+	free (esc->executando);	
+
+	dispatcher();
 	return;
 }
 
