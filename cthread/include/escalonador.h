@@ -45,3 +45,6 @@ void terminate_thread();
 
 /* Procura por uma thread a partir de um tid */
 TCB_t* search_thread(int tid);
+
+/* Retira da lista de bloqueados as thread bloqueados por 'tid' e bota-as na fila de aptos */
+int free_blocked_by(int tid);

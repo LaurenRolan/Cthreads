@@ -170,4 +170,26 @@ TCB_t* search_thread(int tid){
 		}while(!NextFila2(esc->semaforos));
 	
 	return NULL;
+}
+
+int free_blocked_by(int tid){
+
+	TCB_t *t;
+	blocked* b;
+
+	//Procura na lista de bloqueados por cjoin
+	if(FirstFila2(esc->bloq_join) == 0)
+		do{
+			b = (blocked*) GetAtIteratorFila2(esc->bloq_join);
+			t = b->tcb;
+			if(b->tid == tid){
+				//se a thread estava bloqueada por esse tid tira ela da fila de bloqueados
+				if(DeleteAtIteratorFila2(esc->bloq_join) != 0)
+					return ERRO;
+				//e poe ela nos aptos
+				if(put_aptos(t) != 0)
+					return ERRO;
+			}
+		}while(!NextFila2(esc->bloq_join));
+	return SUCESSO;	
 }	

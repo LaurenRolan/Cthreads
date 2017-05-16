@@ -101,7 +101,10 @@ int cjoin(int tid){
 		free(thread->context.uc_stack.ss_sp);
 		//desalocar TCB 
 		free (thread);	
+
 /********TIRAR DO BLOQUEADO*****/
+		
+		
 		esc->executando = NULL;
 
       		return dispatcher();
