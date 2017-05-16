@@ -8,7 +8,6 @@ escalonador* esc;
 /* Inicializa a estrutura necessaria ao escalonador */
 int init_escalonador(){
 	int i;
-	ucontext_t contextTerminate;
 
 	if(esc == NULL){
 		esc = (escalonador *) malloc(sizeof(escalonador));	
@@ -16,13 +15,11 @@ int init_escalonador(){
 		esc->semaforos = (PFILA2) malloc(sizeof(PFILA2));
 		esc->tidCounter = 0;
 		
-		getcontext(&contextTerminate);
-		contextTerminate.uc_stack.ss_sp = (char *)  malloc(SIGSTKSZ);
-		contextTerminate.uc_stack.ss_size = SIGSTKSZ;
-		contextTerminate.uc_link = NULL;
-		makecontext(&contextTerminate, (void (*)(void))terminate_thread, 0);
-		
-		esc->terminate = contextTerminate;
+		getcontext(&(esc->terminate));
+		esc->terminate.uc_stack.ss_sp = (char *)  malloc(SIGSTKSZ);
+		esc->terminate.uc_stack.ss_size = SIGSTKSZ;
+		esc->terminate.uc_link = NULL;
+		makecontext(&(esc->terminate), (void (*)(void))terminate_thread, 0);
 		
 		for(i = 0; i < PRIORIDADES; i++)
 			esc->aptos[i] = malloc(sizeof(PFILA2));
@@ -62,7 +59,7 @@ int put_aptos(TCB_t* newThread){
 /* Dispatcher é responsável por escolher qual a próxima thread que irá executar */
 int dispatcher(){
 	
-	int i;
+	int i, erro;
 	TCB_t* temp;
 	TCB_t* atual;
 	atual = esc->executando;	
@@ -72,25 +69,24 @@ int dispatcher(){
 			continue;
 		if(( temp = (TCB_t*) GetAtIteratorFila2(esc->aptos[i]) ) && temp != NULL){
 			temp->state = PROCST_EXEC;
+			//retira processo da fila de aptos
+			DeleteAtIteratorFila2(esc->aptos[i]);
 			esc->executando = temp;
-			printf("uclink na dispatcher: %p",temp->context.uc_link);
 			if(atual != NULL){
 				//dispatcher foi chamado por yield, wait ou join
-printf("Eae antes do antes do antes\n");
-				if(swapcontext(&(atual->context),&(temp->context)) == -1){
+				erro = swapcontext(&(atual->context),&(temp->context));
+				if(erro  == -1){
 					fprintf(stderr, "Erro ao mudar de contexto no dispatcher. Thread ID %d \n", temp->tid);
 					return ERRO;
 				}
-printf("Eae depois do depois\n");
 			}
-			else		
-				//dispatcher foi chamado de dentro da terminate_thread
-printf("Eae tamo antes\n");				
+			else{		
+				//dispatcher foi chamado de dentro da terminate_thread				
 				if(setcontext(&(temp->context)) == -1){
 					fprintf(stderr, "Erro ao mudar de contexto no dispatcher. Thread ID %d \n", temp->tid);
 					return ERRO;
 				}
-printf("Eae tamo depois\n");	
+			}	
 			return SUCESSO;
 		}
 	}

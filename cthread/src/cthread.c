@@ -12,8 +12,7 @@ int ccreate (void* (*start)(void*), void *arg, int prio){
 	if(esc == NULL)
 		init_lib();
 
-	TCB_t* t;
-	ucontext_t c;	
+	TCB_t* t;	
 
 	t = malloc(sizeof(TCB_t));
 	t->ticket = prio;
@@ -21,13 +20,12 @@ int ccreate (void* (*start)(void*), void *arg, int prio){
 	t->tid = esc->tidCounter;
 	t->state = PROCST_CRIACAO;
 
-	getcontext(&c);
-	c.uc_stack.ss_sp = (char *) malloc(SIGSTKSZ);
-	c.uc_stack.ss_size = SIGSTKSZ;
-	c.uc_link = &(esc->terminate);
+	getcontext(&(t->context));
+	t->context.uc_stack.ss_sp = (char *) malloc(SIGSTKSZ);
+	t->context.uc_stack.ss_size = SIGSTKSZ;
+	t->context.uc_link = &(esc->terminate);
 
-	makecontext(&c, (void (*)(void))start, 1, arg);
-	t->context = c;
+	makecontext(&(t->context), (void (*)(void))start, 1, arg);
 	
 	if(put_aptos(t) != 0)
 		return ERRO;
@@ -84,7 +82,6 @@ int cjoin(int tid){
   	//procurar por thread nas estruturas disponíveis ---> TCB_t *searchThread(int tid)
 	thread = search_thread(tid);
 	getcontext(thread->context.uc_link);
-	printf("uclink na join: %p\n", thread->context.uc_link);
   
   	if(controle == 1){
       		controle = 0;
@@ -92,18 +89,16 @@ int cjoin(int tid){
     	}
     	else{
       		//thread 'tid' terminou
-		//coloca thread bloqueada nos aptos
-		printf("0\n");		
+		//coloca thread bloqueada nos aptos		
 		put_aptos(TCB);
-		printf("1\n");
 		//faz processos de término da função anteriormente executando
-		thread->state = PROCST_TERMINO;printf("2\n");
+		thread->state = PROCST_TERMINO;
 		//desalocar a stack do processo
-		free(thread->context.uc_stack.ss_sp);printf("3\n");
+		free(thread->context.uc_stack.ss_sp);
 		//desalocar TCB 
-		free (thread);printf("4\n");	
-
-		esc->executando = NULL;printf("5\n");
+		free (thread);	
+/********TIRAR DO BLOQUEADO*****/
+		esc->executando = NULL;
 
       		return dispatcher();
   	}

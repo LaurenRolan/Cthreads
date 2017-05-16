@@ -4,7 +4,6 @@
 
 void printa(void* oi){
 	printf("Reginaldo %d\n", (*(int *)oi));
-	printf("uclink: %p\n", esc->executando->context.uc_link);
 }
 
 int main(){
@@ -16,7 +15,7 @@ int main(){
 	else 
 		printf("Erro\n");
 	
-	if(cjoin(tid1))
+	if(cjoin(tid1) == SUCESSO)
 		return 0;
 
 	printf("ERRO NO CJOIN\n");
