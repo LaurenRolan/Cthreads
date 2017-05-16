@@ -12,7 +12,7 @@
 CC=gcc
 CFLAGS= -Wall -g
 
-TARGET= T_free_blocked_by
+TARGET= T_cjoin
 
 LIB_DIR=../lib
 INC_DIR=../include
