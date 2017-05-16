@@ -19,6 +19,13 @@ typedef struct s_escalonador{
 
 }escalonador;
 
+typedef struct s_blocked{
+	
+	TCB_t tcb;			//TCB do processo bloqueado
+	int tid;			//tid do processo pelo qual ele está esperando
+
+}blocked;
+
 extern escalonador* esc;
 
 /* Inicializa a estrutura necessaria ao escalonador */

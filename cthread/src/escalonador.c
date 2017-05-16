@@ -131,6 +131,7 @@ TCB_t* search_thread(int tid){
 	int i;	
 	TCB_t *t;
 	csem_t* s;
+	blocked *b;
 
 	// Primeiro vê se essa thread é a que está executando
 	if(esc->executando != NULL)
@@ -150,7 +151,8 @@ TCB_t* search_thread(int tid){
 	//Procura na lista de bloqueados por cjoin
 	if(FirstFila2(esc->bloq_join) == 0)
 		do{
-			t = (TCB_t*) GetAtIteratorFila2(esc->bloq_join);
+			b = (blocked*) GetAtIteratorFila2(esc->bloq_join);
+			t = &(b->tcb);
 			if(t->tid == tid)
 				return t;
 		}while(!NextFila2(esc->bloq_join));
@@ -168,4 +170,4 @@ TCB_t* search_thread(int tid){
 		}while(!NextFila2(esc->semaforos));
 	
 	return NULL;
-}
+}	

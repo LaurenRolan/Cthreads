@@ -6,6 +6,7 @@
 int main(){
 
 	TCB_t *t, thr[10];
+	blocked b;
 	int i;
 	csem_t sem[2];
 
@@ -38,7 +39,9 @@ int main(){
 	thr[6].tid = 6;
 	thr[6].ticket = 0;
 	thr[6].state = PROCST_BLOQ;
-	AppendFila2(esc->bloq_join, (void*)&thr[6]);
+	b.tcb = thr[6];
+	b.tid = 3;
+	AppendFila2(esc->bloq_join, (void*)&b);
 	
 	//Bloqueado semaforo
 	thr[7].tid = 7;
