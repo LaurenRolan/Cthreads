@@ -12,7 +12,7 @@
 CC=gcc
 CFLAGS= -Wall -g
 
-TARGET= T_csetprio
+TARGET= T_cjoin
 
 LIB_DIR=../lib
 INC_DIR=../include
