@@ -56,7 +56,10 @@ int csem_init(csem_t *sem, int count){ //Não funciona como deveria
 	//biblioteca ainda não inicializada	
 	if(esc == NULL)
 		init_lib();	
-
+	if(count < 0) {
+		printf("Valor invalido.\n");
+		return ERRO;
+	}
 	sem->fila = (PFILA2) malloc(sizeof(PFILA2));
 	sem->count = count;
 	if(AppendFila2(esc->semaforos, (void*) sem) != 0){
