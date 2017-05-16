@@ -19,6 +19,7 @@ int init_escalonador(){
 		getcontext(&contextTerminate);
 		contextTerminate.uc_stack.ss_sp = (char *)  malloc(SIGSTKSZ);
 		contextTerminate.uc_stack.ss_size = SIGSTKSZ;
+		contextTerminate.uc_link = NULL;
 		makecontext(&contextTerminate, (void (*)(void))terminate_thread, 0);
 		
 		esc->terminate = contextTerminate;
@@ -63,21 +64,34 @@ int dispatcher(){
 	
 	int i;
 	TCB_t* temp;
-	TCB_t atual;
-	//PROBLEMA: quando a thread terminate o esc->executando já foi desalocado
-	atual = *(esc->executando);
-	
+	TCB_t* atual;
+	atual = esc->executando;	
+
 	for(i=0; i < PRIORIDADES; i++){
 		if(FirstFila2(esc->aptos[i]) != 0 && LastFila2(esc->aptos[i]) != 0)	//Verifica se a fila é vazia
 			continue;
 		if(( temp = (TCB_t*) GetAtIteratorFila2(esc->aptos[i]) ) && temp != NULL){
 			temp->state = PROCST_EXEC;
 			esc->executando = temp;
-			if(swapcontext(&(atual.context),&(temp->context)) == -1){
-				fprintf(stderr, "Erro ao mudar de contexto no dispatcher. Thread ID %d \n", temp->tid);
-				return ERRO;
+			printf("uclink na dispatcher: %p",temp->context.uc_link);
+			if(atual != NULL){
+				//dispatcher foi chamado por yield, wait ou join
+printf("Eae antes do antes do antes\n");
+				if(swapcontext(&(atual->context),&(temp->context)) == -1){
+					fprintf(stderr, "Erro ao mudar de contexto no dispatcher. Thread ID %d \n", temp->tid);
+					return ERRO;
+				}
+printf("Eae depois do depois\n");
 			}
-			break;
+			else		
+				//dispatcher foi chamado de dentro da terminate_thread
+printf("Eae tamo antes\n");				
+				if(setcontext(&(temp->context)) == -1){
+					fprintf(stderr, "Erro ao mudar de contexto no dispatcher. Thread ID %d \n", temp->tid);
+					return ERRO;
+				}
+printf("Eae tamo depois\n");	
+			return SUCESSO;
 		}
 	}
 	
@@ -85,22 +99,21 @@ int dispatcher(){
 }
 
 int init_lib() {
-	ucontext_t c;
-	TCB_t *t;
-	t = malloc(sizeof(TCB_t));
-	t->ticket = 0;
-	t->state = PROCST_EXEC;
-	t->tid = 0; 
-	t->context = c;
+	TCB_t *tmain;
+	tmain = malloc(sizeof(TCB_t));
+	tmain->ticket = 0;
+	tmain->state = PROCST_EXEC;
+	tmain->tid = 0; 
+	getcontext(&(tmain->context));
 	if(init_escalonador()!= SUCESSO) return ERRO;
-	esc->executando = t;
+	esc->executando = tmain;
 	return SUCESSO;
 	
 }
 
 void terminate_thread(){
-	
-	TCB *t;
+
+	esc->executando->state = PROCST_TERMINO;
 	
 	//atualiza contexto, para próxima vez que vierem pra cá
 	getcontext(&(esc->terminate));
@@ -110,6 +123,8 @@ void terminate_thread(){
 
 	//desalocar TCB 
 	free (esc->executando);	
+
+	esc->executando = NULL;
 
 	dispatcher();
 	return;

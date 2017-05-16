@@ -32,7 +32,7 @@ int ccreate (void* (*start)(void*), void *arg, int prio){
 	if(put_aptos(t) != 0)
 		return ERRO;
 	
-	return SUCESSO;
+	return t->tid;
 
 }
 
@@ -75,22 +75,37 @@ int cyield(){
 }
 
 int cjoin(int tid){
-	TCB_t *TCB;
+	TCB_t *TCB, *thread;
   	int controle = 1;
+	
 	TCB = esc->executando;
 	TCB->state = PROCST_BLOQ;
 	AppendFila2(esc->bloq_join, TCB);
   	//procurar por thread nas estruturas disponíveis ---> TCB_t *searchThread(int tid)
-	getcontext((search_thread(tid)->context.uc_link));
-  //a ideia era mudar o uc_link e fazer voltar pra cá quando "thread" terminar (n sei fazer isso)
+	thread = search_thread(tid);
+	getcontext(thread->context.uc_link);
+	printf("uclink na join: %p\n", thread->context.uc_link);
   
   	if(controle == 1){
-      	controle = 0;
+      		controle = 0;
 		return dispatcher();
-    }
-    else{
-      	put_aptos(TCB);
-      	return dispatcher();
+    	}
+    	else{
+      		//thread 'tid' terminou
+		//coloca thread bloqueada nos aptos
+		printf("0\n");		
+		put_aptos(TCB);
+		printf("1\n");
+		//faz processos de término da função anteriormente executando
+		thread->state = PROCST_TERMINO;printf("2\n");
+		//desalocar a stack do processo
+		free(thread->context.uc_stack.ss_sp);printf("3\n");
+		//desalocar TCB 
+		free (thread);printf("4\n");	
+
+		esc->executando = NULL;printf("5\n");
+
+      		return dispatcher();
   	}
 }
 
