@@ -74,11 +74,15 @@ int cyield(){
 
 int cjoin(int tid){
 	TCB_t *TCB, *thread;
-  	int controle = 1;
+  	blocked* b;
+	int controle = 1;
 	
 	TCB = esc->executando;
 	TCB->state = PROCST_BLOQ;
-	AppendFila2(esc->bloq_join, TCB);
+	b = (blocked*) malloc(sizeof(blocked));
+	b->tcb = TCB;
+	b->tid = tid;
+	AppendFila2(esc->bloq_join, (void *) b);
   	//procurar por thread nas estruturas disponíveis ---> TCB_t *searchThread(int tid)
 	thread = search_thread(tid);
 	getcontext(thread->context.uc_link);

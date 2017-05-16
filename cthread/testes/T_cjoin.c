@@ -15,8 +15,10 @@ int main(){
 	else 
 		printf("Erro\n");
 	
-	if(cjoin(tid1) == SUCESSO)
+	if(cjoin(tid1) == SUCESSO){
+		printf("Sucesso no teste da cjoin.\n");
 		return 0;
+	}
 
 	printf("ERRO NO CJOIN\n");
 	return -1;

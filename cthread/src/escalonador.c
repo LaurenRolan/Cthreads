@@ -152,7 +152,7 @@ TCB_t* search_thread(int tid){
 	if(FirstFila2(esc->bloq_join) == 0)
 		do{
 			b = (blocked*) GetAtIteratorFila2(esc->bloq_join);
-			t = &(b->tcb);
+			t = b->tcb;
 			if(t->tid == tid)
 				return t;
 		}while(!NextFila2(esc->bloq_join));
