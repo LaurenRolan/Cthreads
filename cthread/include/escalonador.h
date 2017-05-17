@@ -51,3 +51,6 @@ int free_blocked_by(int tid);
 
 /* Encerracao da thread em cjoin e desalocacao de estruturas */
 void terminate_join();
+
+/* Imprime todas filas */
+void print_escalonador();

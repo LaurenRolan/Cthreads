@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "support.h"
+#include "../include/support.h"
 
 int	vetor[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 

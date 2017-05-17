@@ -65,8 +65,9 @@ int dispatcher(){
 	atual = esc->executando;	
 
 	for(i=0; i < PRIORIDADES; i++){
-		if(FirstFila2(esc->aptos[i]) != 0 && LastFila2(esc->aptos[i]) != 0)	//Verifica se a fila é vazia
+		if(FirstFila2(esc->aptos[i]) != 0 && LastFila2(esc->aptos[i]) != 0)	//Verifica se a fila é vazia	
 			continue;
+
 		if(( temp = (TCB_t*) GetAtIteratorFila2(esc->aptos[i]) ) && temp != NULL){
 			temp->state = PROCST_EXEC;
 			//retira processo da fila de aptos
@@ -90,7 +91,7 @@ int dispatcher(){
 			return SUCESSO;
 		}
 	}
-	
+		
 	return ERRO; //não existe nenhuma thread apta no momento
 }
 
@@ -137,6 +138,7 @@ TCB_t* search_thread(int tid){
 	if(esc->executando != NULL)
 		if((esc->executando)->tid == tid)
 			return esc->executando;
+
 	//Procura nas filas de apto
 	for(i = 0; i < PRIORIDADES; i++){
 		if(FirstFila2(esc->aptos[i]) != 0) 
@@ -174,23 +176,31 @@ TCB_t* search_thread(int tid){
 
 int free_blocked_by(int tid){
 
-	TCB_t *t;
 	blocked* b;
+	int next = 0;
 
 	//Procura na lista de bloqueados por cjoin
 	if(FirstFila2(esc->bloq_join) == 0)
 		do{
 			b = (blocked*) GetAtIteratorFila2(esc->bloq_join);
-			t = b->tcb;
-			if(b->tid == tid){
-				//se a thread estava bloqueada por esse tid tira ela da fila de bloqueados
-				if(DeleteAtIteratorFila2(esc->bloq_join) != 0)
-					return ERRO;
-				//e poe ela nos aptos
-				if(put_aptos(t) != 0)
-					return ERRO;
+			if(b != NULL){		
+				if(b->tid == tid){
+					//poe ela nos aptos
+					if(put_aptos(b->tcb) != 0){
+						fprintf(stderr, "Erro ao colocar processo liberado na fila de aptos.\n");
+						return ERRO;
+					}
+					
+					//se a thread estava bloqueada por esse tid tira ela da fila de bloqueados
+					if(DeleteAtIteratorFila2(esc->bloq_join) != 0)
+						return ERRO;
+				}
+				else
+					next = NextFila2(esc->bloq_join);
 			}
-		}while(!NextFila2(esc->bloq_join));
+			else
+				next = NextFila2(esc->bloq_join);
+		}while(!next);
 	return SUCESSO;	
 }
 
@@ -206,6 +216,7 @@ void terminate_join(){
 	//libera as threads bloqueadas por tid		
 	if(free_blocked_by(esc->executando->tid) != 0)
 		fprintf(stderr, "Erro ao liberar processos bloqueados por %d", esc->executando->tid);
+
 	//desalocar TCB 
 	free(esc->executando);
 
@@ -213,3 +224,55 @@ void terminate_join(){
 
      	dispatcher();
 }
+
+
+
+void print_escalonador(){
+	TCB_t *t;
+	csem_t* s;
+	blocked *b;
+	int i;
+
+	if(esc->executando != NULL)
+		printf("EXECUTANDO: Thread %d\n", esc->executando->tid);
+
+	//Procura nas filas de apto
+	for(i = 0; i < PRIORIDADES; i++){
+		printf("APTOS %d:\n", i);
+		if(FirstFila2(esc->aptos[i]) != 0) 
+			continue;			//Essa fila de prioridade está vazia
+		do{
+			t = (TCB_t*) GetAtIteratorFila2(esc->aptos[i]);
+			printf("\tThread %d\n",t->tid);
+		}while(!NextFila2(esc->aptos[i]));
+	}
+
+	//Procura na lista de bloqueados por cjoin
+	if(FirstFila2(esc->bloq_join) == 0){
+		printf("BLOQUEADOS_JOIN:\n");
+		do{
+			b = (blocked*) GetAtIteratorFila2(esc->bloq_join);
+			t = b->tcb;
+			printf("\tThread %d\n",t->tid);
+		}while(!NextFila2(esc->bloq_join));
+	}
+
+	i=0;
+	//Procura na fila de cada semáforo da lista de semáforosi
+	if(FirstFila2(esc->semaforos) == 0){
+		printf("SEMAFOROS:\n");
+		do{
+			s = (csem_t*) GetAtIteratorFila2(esc->semaforos);
+			if(FirstFila2(s->fila) == 0){
+				printf("\tSEMAFORO %d:\n", i);
+				do{	
+					t = (TCB_t*) GetAtIteratorFila2(s->fila);
+					printf("\t\tThread: %d\n",t->tid);
+				}while(!NextFila2(s->fila));
+			}
+			i++;			
+		}while(!NextFila2(esc->semaforos));
+	}
+}
+
+

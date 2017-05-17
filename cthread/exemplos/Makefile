@@ -4,6 +4,7 @@
 
 CC=gcc
 LIB_DIR=../lib
+BIN_DIR=../bin
 
 all: exemplo mandel teste_vetor barbeiro filosofos prodcons series
 
@@ -28,6 +29,11 @@ prodcons: prodcons.c $(LIB_DIR)/libcthread.a
 series: series.c $(LIB_DIR)/libcthread.a
 	$(CC) -o series series.c -L$(LIB_DIR) -lcthread -lm -Wall
 	
+testSupport.o: testSupport.c
+	$(CC) -Wall -g -c testSupport.c 
+
+testSupport: testSupport.o $(BIN_DIR)/support.o
+	$(CC) -Wall -g -o testSupport testSupport.o $(BIN_DIR)/support.o
 clean:
 	rm -rf exemplo mandel teste_vetor barbeiro filosofos prodcons series *.o *~
 
