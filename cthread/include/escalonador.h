@@ -48,3 +48,6 @@ TCB_t* search_thread(int tid);
 
 /* Retira da lista de bloqueados as thread bloqueados por 'tid' e bota-as na fila de aptos */
 int free_blocked_by(int tid);
+
+/* Encerracao da thread em cjoin e desalocacao de estruturas */
+void terminate_join();

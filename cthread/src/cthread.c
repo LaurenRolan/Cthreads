@@ -77,9 +77,10 @@ int cyield(){
 
 int cjoin(int tid){
 	TCB_t *TCB, *thread;
-  	blocked* b;
-	int controle = 1;
+  	blocked* b;	
+
 	
+
 	TCB = esc->executando;
 	TCB->state = PROCST_BLOQ;
 	b = (blocked*) malloc(sizeof(blocked));
@@ -88,30 +89,14 @@ int cjoin(int tid){
 	AppendFila2(esc->bloq_join, (void *) b);
   	//procurar por thread nas estruturas disponíveis ---> TCB_t *searchThread(int tid)
 	thread = search_thread(tid);
+	
 	getcontext(thread->context.uc_link);
-  
-  	if(controle == 1){
-      		controle = 0;
-		return dispatcher();
-    	}
-    	else{
-      		//thread 'tid' terminou
-		//coloca thread bloqueada nos aptos		
-		put_aptos(TCB);
-		//faz processos de término da função anteriormente executando
-		thread->state = PROCST_TERMINO;
-		//desalocar a stack do processo
-		free(thread->context.uc_stack.ss_sp);
-		//desalocar TCB 
-		free (thread);	
-		//libera as threads bloqueadas por tid		
-		if(free_blocked_by(tid) != 0)
-			return ERRO;
+	thread->context.uc_link->uc_stack.ss_sp = (char *)  malloc(SIGSTKSZ);
+	thread->context.uc_link->uc_stack.ss_size = SIGSTKSZ;
+	thread->context.uc_link->uc_link = NULL;
+	makecontext(thread->context.uc_link, (void (*)(void))terminate_join, 0);
 
-		esc->executando = NULL;
-
-      		return dispatcher();
-  	}
+  	return dispatcher(); 
 }
 
 int cwait(csem_t *sem){ //não testada

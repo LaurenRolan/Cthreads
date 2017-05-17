@@ -73,7 +73,7 @@ int dispatcher(){
 			DeleteAtIteratorFila2(esc->aptos[i]);
 			esc->executando = temp;
 			if(atual != NULL){
-				//dispatcher foi chamado por yield, wait ou join
+				//dispatcher foi chamado por yield, wait
 				erro = swapcontext(&(atual->context),&(temp->context));
 				if(erro  == -1){
 					fprintf(stderr, "Erro ao mudar de contexto no dispatcher. Thread ID %d \n", temp->tid);
@@ -192,4 +192,24 @@ int free_blocked_by(int tid){
 			}
 		}while(!NextFila2(esc->bloq_join));
 	return SUCESSO;	
-}	
+}
+
+void terminate_join(){
+
+	//thread 'tid' terminou
+	//faz processos de término da função anteriormente executando
+	esc->executando->state = PROCST_TERMINO;
+
+	//desalocar a stack do processo
+	free(esc->executando->context.uc_stack.ss_sp);
+
+	//libera as threads bloqueadas por tid		
+	if(free_blocked_by(esc->executando->tid) != 0)
+		fprintf(stderr, "Erro ao liberar processos bloqueados por %d", esc->executando->tid);
+	//desalocar TCB 
+	free(esc->executando);
+
+	esc->executando = NULL;
+
+     	dispatcher();
+}

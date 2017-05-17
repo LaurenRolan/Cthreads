@@ -22,7 +22,6 @@ int main(){
 		printf("Sucesso TID2\n");
 	else printf("Erro TID2");
 	
-	
 	if(cjoin(tid2) == SUCESSO){
 		printf("Sucesso no teste da cjoin.\n");
 		return 0;
