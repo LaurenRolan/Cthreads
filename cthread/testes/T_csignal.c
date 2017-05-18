@@ -4,7 +4,7 @@
 #include "../include/cthread.h"
 
 int main() {
-	csem_t semaforoReal, semaforoFake;
+	csem_t semaforoReal, semaforoFake, semaforoZero;
 	TCB_t *fake1, *fake2, *fake3;
 	TCB_t *primApta;
 
@@ -53,5 +53,11 @@ int main() {
 	free(fake2);
 	free(fake3);
 	
+	csem_init(&semaforoZero, 0);
+	printf("SemaforoZero inicializado com %d recursos.\n", semaforoZero.count);
+	if(csignal(&semaforoZero)==SUCESSO) {
+		printf("SemaforoZero agora tem %d recursos disponíveis.\n", semaforoZero.count);
+		printf("Teste realizado com sucesso.\n");
+	}	
 	return 0;
 }
