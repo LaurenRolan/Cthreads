@@ -119,16 +119,20 @@ int csignal(csem_t *sem){
 	//Biblioteca não inicializada, não há semáforo algum.
     	if(esc==NULL) return ERRO;
 	
+	//Semáforo não foi alocado
+	if(sem==NULL) return ERRO;
+	
 	//Verifica o primeiro da fila
 	FirstFila2(esc->semaforos);
 	atual = (csem_t*) GetAtIteratorFila2(esc->semaforos);
 	while(achou != 1 && atual != NULL){
 		if(atual == sem) {
-			//Pega a 1ª thread da fila do semáforo e a põe em aptos
-			FirstFila2(sem->fila);
-			if(put_aptos((TCB_t*)GetAtIteratorFila2(sem->fila))!=SUCESSO)
-				printf("Erro ao inserir a thread em aptos.\n");
-			DeleteAtIteratorFila2(sem->fila);
+			//Pega a 1ª thread da fila do semáforo (se houver) e a põe em aptos
+			if(FirstFila2(sem->fila) == SUCESSO) {
+				if(put_aptos((TCB_t*)GetAtIteratorFila2(sem->fila))!=SUCESSO)
+					printf("Erro ao inserir a thread em aptos.\n");
+				DeleteAtIteratorFila2(sem->fila);
+			}
 			sem->count ++;
 			achou = 1;
 		}
