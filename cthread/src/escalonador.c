@@ -278,4 +278,17 @@ void print_escalonador(){
 	}
 }
 
+int has_blocked_by(int tid){
+	blocked* b;
+	TCB_t *t;
+	if(FirstFila2(esc->bloq_join) == 0)
+		do{
+			b = (blocked*) GetAtIteratorFila2(esc->bloq_join);
+			t = b->tcb;
+			if(t->tid == tid)
+				return 1;
+		}while(!NextFila2(esc->bloq_join));
+	
+	return 0;
+}
 

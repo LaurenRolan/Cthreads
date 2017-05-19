@@ -96,26 +96,28 @@ int cyield(){
 int cjoin(int tid){
 	TCB_t *TCB, *thread;
   	blocked* b;	
-
-	
-
-	TCB = esc->executando;
-	TCB->state = PROCST_BLOQ;
-	b = (blocked*) malloc(sizeof(blocked));
-	b->tcb = TCB;
-	b->tid = tid;
-	AppendFila2(esc->bloq_join, (void *) b);
-  	//procurar por thread nas estruturas disponíveis ---> TCB_t *searchThread(int tid)
+	//procurar por thread nas estruturas disponíveis ---> TCB_t *searchThread(int tid)
 	thread = search_thread(tid);
 	
-	getcontext(thread->context.uc_link);
-	thread->context.uc_link->uc_stack.ss_sp = (char *)  malloc(SIGSTKSZ);
-	thread->context.uc_link->uc_stack.ss_size = SIGSTKSZ;
-	thread->context.uc_link->uc_link = NULL;
-	makecontext(thread->context.uc_link, (void (*)(void))terminate_join, 0);
-
-  	return dispatcher(); 
+	if(thread != NULL && !has_blocked_by(tid)){
+		TCB = esc->executando;
+		TCB->state = PROCST_BLOQ;
+		b = (blocked*) malloc(sizeof(blocked));
+		b->tcb = TCB;
+		b->tid = tid;
+		AppendFila2(esc->bloq_join, (void *) b);
+	  		
+		getcontext(thread->context.uc_link);
+		thread->context.uc_link->uc_stack.ss_sp = (char *)  malloc(SIGSTKSZ);
+		thread->context.uc_link->uc_stack.ss_size = SIGSTKSZ;
+		thread->context.uc_link->uc_link = NULL;
+		makecontext(thread->context.uc_link, (void (*)(void))terminate_join, 0);
+		
+		return dispatcher(); 
+	}
+	else return ERRO;
 }
+
 
 int cwait(csem_t *sem){ //não testada
     	if(sem->count > 0) {

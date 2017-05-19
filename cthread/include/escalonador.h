@@ -54,3 +54,6 @@ void terminate_join();
 
 /* Imprime todas filas */
 void print_escalonador();
+
+/* Retorna se uma thread já está sendo bloqueada por um tid*/
+int has_blocked_by(int tid);
