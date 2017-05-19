@@ -17,16 +17,16 @@ INC_DIR=./include
 BIN_DIR=./bin
 SRC_DIR=./src
 
-all: escalonador.o cthread.o 
+all: escalonador.o cthread.o libcthread.a
 
 escalonador.o: $(SRC_DIR)/escalonador.c
 	$(CC) $(CFLAGS) -I$(INC_DIR) -c $(SRC_DIR)/escalonador.c -o  $(BIN_DIR)/escalonador.o
-
-#cthread.o: $(INC_DIR)/cthread.h
-#	$(CC) $(CFLAGS) -I$(INC_DIR) -c $(INC_DIR)/cthread.h -o  $(BIN_DIR)/cthread.o
 	
 cthread.o: $(SRC_DIR)/cthread.c
 	$(CC) $(CFLAGS) -I$(INC_DIR) -c $(SRC_DIR)/cthread.c -o  $(BIN_DIR)/cthread.o
+
+libcthread.a: $(BIN_DIR)/cthread.o $(BIN_DIR)/escalonador.o $(BIN_DIR)/support.o
+	ar crs $(LIB_DIR)/libcthread.a $(BIN_DIR)/cthread.o $(BIN_DIR)/escalonador.o $(BIN_DIR)/support.o
 
 clean:
 	rm -rf $(LIB_DIR)/*.a $(SRC_DIR)/*~ $(INC_DIR)/*~ *~ ; cp $(BIN_DIR)/support.o $(INC_DIR)/support.o ; rm -rf  $(BIN_DIR)/*.o ; mv $(INC_DIR)/support.o $(BIN_DIR)/support.o

@@ -18,13 +18,6 @@ int main(){
 		printf("Erro no teste.\n");
 	else
 		printf("Sucesso no teste de ccreate.\n");
-
-	
-	/*Descomentar assim que o dispatcher estiver fazendo troca de contexto
-	if(dispatcher() != 0)
-		printf("Erro no dispatcher.\n");
-	else
-		printf("Sucesso no dispatcher.\n");*/
 	 
 	return 0;
 }
