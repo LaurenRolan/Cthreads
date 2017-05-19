@@ -98,7 +98,7 @@ int cjoin(int tid){
   	blocked* b;	
 	//procurar por thread nas estruturas disponíveis ---> TCB_t *searchThread(int tid)
 	thread = search_thread(tid);
-	
+
 	if(thread != NULL && !has_blocked_by(tid)){
 		TCB = esc->executando;
 		TCB->state = PROCST_BLOQ;
