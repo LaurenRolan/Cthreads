@@ -96,6 +96,9 @@ int dispatcher(){
 }
 
 int init_lib() {
+	//Se já existe um escalonador, não é necessário inicializar a biblioteca
+	if (esc != NULL) return ERRO;
+	
 	TCB_t *tmain;
 	tmain = malloc(sizeof(TCB_t));
 	tmain->ticket = 0;
