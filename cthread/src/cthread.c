@@ -36,7 +36,7 @@ int ccreate (void* (*start)(void*), void *arg, int prio){
 
 int csetprio(int tid, int prio){
 	
-	TCB_t *t;
+	TCB_t *t, *search;
 	
 	if(prio < 0 || prio > 3)
 		return ERRO;
@@ -45,7 +45,25 @@ int csetprio(int tid, int prio){
 	if(t == NULL)
 		return ERRO;	
 
-	t->ticket = prio;
+	//se a thread esta na fila de aptos, tem que trocar ela para uma outra fila correspondente à sua prio
+	if(t->state == PROCST_APTO){
+		
+		//primeiramente iremos tira-la da fila de aptos antiga	
+		if(FirstFila2(esc->aptos[t->ticket]) != 0) 
+			return ERRO;			//Essa fila de prioridade está vazia e não devia estar
+		do{
+			search = (TCB_t*) GetAtIteratorFila2(esc->aptos[t->ticket]);
+			if(search->tid == tid){
+				if(DeleteAtIteratorFila2(esc->aptos[t->ticket]) != 0)
+					return ERRO;
+				break;	
+			}
+		}while(!NextFila2(esc->aptos[t->ticket]));
+		
+		t->ticket = prio;
+		
+		put_aptos(t);
+	}		
 
 	return SUCESSO;
 
