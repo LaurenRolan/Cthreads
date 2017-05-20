@@ -112,7 +112,8 @@ void *Philosophers(void *arg) {
 
 	*(status+2*i)='D';
 	state[i] = DONE;
-	return;
+
+	return NULL;
 }
 
 
@@ -120,10 +121,10 @@ void *Philosophers(void *arg) {
  
 int	main(int argc, char *argv[]) {
 	int 	ThreadId[N];
-	int	i,ret;
-        	
-        srand((unsigned)time(NULL));
+	int	i;
 
+        srand((unsigned)time(NULL));
+	
         csem_init(&mutex, 1);
 	
 	for(i = 0; i < N; i++) 
@@ -133,15 +134,16 @@ int	main(int argc, char *argv[]) {
 	   }
 
 	for(i = 0; i < N; i++) {
-	   if (ThreadId[i] = ccreate(Philosophers, (void *)i, 0)) {
+	   if (!(ThreadId[i] = ccreate(Philosophers, (void *)i, 0))) {
 	      exit(0);
 	   }
 	}
-
         printf("#\n# The dinner will begin...\n");
 
 	for(i = 0; i < N; i++)
-	   ret = cjoin(ThreadId[i]);
+	   printf("Retorno cjoin(%d): %d\n", ThreadId[i], cjoin(ThreadId[i]));
 
-        printf("\n# Diner ends... All philosophers goes to sleep...\n\n\n");	   
+        printf("\n# Diner ends... All philosophers goes to sleep...\n\n\n");	
+	
+	return 0;   
 }
