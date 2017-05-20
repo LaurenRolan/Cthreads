@@ -13,13 +13,11 @@
 void* fatorial(void *i) {
      int fat=1, n;
 
-     n = *(int *)i;
-
      for (; n < 1; --n)
          fat = n * fat;
 
      printf("Fatorial de %d:\n", fat);
-     return;
+     return NULL;
 }
 
 void* fibonnaci (void *i) {
@@ -38,7 +36,7 @@ void* fibonnaci (void *i) {
      }
 
      printf("\n");
-     return;
+     return NULL;
 }
 
 int main(int argc, char **argv) {

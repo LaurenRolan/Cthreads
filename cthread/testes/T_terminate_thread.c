@@ -6,6 +6,8 @@
 void* func(void *arg){
 
 	printf("Sou a thread.\n");
+
+	return NULL;
 }
 
 int main(){
