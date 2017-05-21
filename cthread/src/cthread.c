@@ -37,6 +37,9 @@ int ccreate (void* (*start)(void*), void *arg, int prio){
 int csetprio(int tid, int prio){
 	
 	TCB_t *t, *search;
+
+	if(esc == NULL)
+		init_lib();
 	
 	if(prio < 0 || prio > 3)
 		return ERRO;
@@ -84,7 +87,10 @@ int csem_init(csem_t *sem, int count){
 }
 
 int cyield(){
-	TCB_t * TCB;
+	
+	if(esc == NULL)
+		init_lib();TCB_t * TCB;
+
 	TCB = esc->executando;
 	put_aptos(TCB);
 	return dispatcher();
@@ -93,6 +99,10 @@ int cyield(){
 int cjoin(int tid){
 	TCB_t *TCB, *thread;
   	blocked* b;	
+	
+	if(esc == NULL)
+		init_lib();
+
 	//procurar por thread nas estruturas disponíveis ---> TCB_t *searchThread(int tid)
 	thread = search_thread(tid);
 

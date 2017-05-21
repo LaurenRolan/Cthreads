@@ -35,10 +35,10 @@ int main(){
 		printf("Erro no teste da cjoin.\n");
 
 	if(cjoin(tid2) == SUCESSO){
-		printf("Sucesso no segundo teste da cjoin.\n");
+		printf("Erro no segundo teste da cjoin.\n");
 	}
 	else
-		printf("Erro no segundo teste da cjoin.\n");
+		printf("Sucesso no segundo teste da cjoin.\n");
 
 	return 0;
 }

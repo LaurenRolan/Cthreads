@@ -14,19 +14,18 @@ int main(){
 
 	int i;	
 
-	init_lib();
-
-	if(ccreate(func, (void*) &i, 0) != SUCESSO)
+	if(ccreate(func, (void*) &i, 0) != 1)
 		printf("Erro na funcao ccreate.\n");
+	else
+		printf("Sucesso na criacao da thread\n");
+
 	
 	//Eu sei que nesse momento o ponteiro vai continuar na fila de aptos para lixo
 	//Mas não estamos testando a dispatcher(), que é responsável por cuidar disso
 	//Então tanto faz
 	esc->executando = search_thread(1);
-
-	terminate_thread();
 	
-	printf("Se não deu erro na free ou dispatcher, tá tudo certo!\n");
+	printf("Se não deu erro, tá tudo certo!\n");
 
 	return 0;
 }
