@@ -143,6 +143,7 @@ int cwait(csem_t *sem){
 		printf("Erro ao inserir na fila de bloqueados.\n");
 		return ERRO;
 	}
+	sem->count --;
 	esc->executando->state = PROCST_BLOQ;
 	if(dispatcher() != ERRO) return SUCESSO;
 	return ERRO;
