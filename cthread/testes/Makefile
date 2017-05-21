@@ -10,7 +10,10 @@ LIB_DIR=../lib
 BIN_DIR=../bin
 INC_DIR=../include
 
-all: T_cidentify T_ccreate T_cjoin2 T_cjoin T_csem_init T_csetprio T_csignal T_cwait T_cyield T_dispatcher T_free_blocked_by T_init_escalonador T_init_lib T_put_aptos T_search_thread T_terminate_thread
+all: T_prioridades T_cidentify T_ccreate T_cjoin2 T_cjoin T_csem_init T_csetprio T_csignal T_cwait T_cyield T_dispatcher T_free_blocked_by T_init_escalonador T_init_lib T_put_aptos T_search_thread T_terminate_thread
+
+T_prioridades: T_prioridades.c $(LIB_DIR)/libcthread.a
+	$(CC) -o T_prioridades T_prioridades.c -I$(INC_DIR)/ -L$(LIB_DIR) -lcthread $(CFLAGS)
 
 T_cidentify: T_cidentify.c $(LIB_DIR)/libcthread.a
 	$(CC) -o T_cidentify T_cidentify.c -I$(INC_DIR)/ -L$(LIB_DIR) -lcthread $(CFLAGS)
@@ -61,4 +64,4 @@ T_terminate_thread: T_terminate_thread.c $(LIB_DIR)/libcthread.a
 	$(CC) -o T_terminate_thread T_terminate_thread.c -I$(INC_DIR)/ -L$(LIB_DIR) -lcthread $(CFLAGS)
 
 clean:
-	rm -rf *.o *~ T_cidentify T_ccreate T_cjoin2 T_cjoin T_csem_init T_csetprio T_csignal T_cwait T_cyield T_dispatcher T_free_blocked_by T_init_escalonador T_init_lib T_put_aptos T_search_thread T_terminate_thread
+	rm -rf *.o *~ T_prioridades T_cidentify T_ccreate T_cjoin2 T_cjoin T_csem_init T_csetprio T_csignal T_cwait T_cyield T_dispatcher T_free_blocked_by T_init_escalonador T_init_lib T_put_aptos T_search_thread T_terminate_thread

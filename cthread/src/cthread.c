@@ -66,7 +66,9 @@ int csetprio(int tid, int prio){
 		t->ticket = prio;
 		
 		put_aptos(t);
-	}		
+	}
+	else
+		t->ticket = prio;		
 
 	return SUCESSO;
 
