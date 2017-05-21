@@ -95,17 +95,23 @@ int dispatcher(){
 	return ERRO; //não existe nenhuma thread apta no momento
 }
 
+/*Função executada na primeira chamada à biblioteca*/
 int init_lib() {
 	//Se já existe um escalonador, não é necessário inicializar a biblioteca
 	if (esc != NULL) return ERRO;
 	
+	//Aloca e cria contexto da main, seguindo as definições do enunciado
 	TCB_t *tmain;
 	tmain = malloc(sizeof(TCB_t));
 	tmain->ticket = 0;
 	tmain->state = PROCST_EXEC;
 	tmain->tid = 0; 
 	getcontext(&(tmain->context));
+	
+	//Inicializa o escalonador
 	if(init_escalonador()!= SUCESSO) return ERRO;
+	
+	//Põe a main em execução
 	esc->executando = tmain;
 	return SUCESSO;
 	
