@@ -2,27 +2,30 @@
 #include <stdlib.h>
 #include "../include/escalonador.h"
 
+#define N 	500  //NÚMERO DE THREADS CRIADAS
+
 void printa(void* oi){
 	printf("Executando thread1 %d\n", (*(int *)oi));
 }
 
 void socorro(void *tid){
-	printf("Esperando thread%d...\n", (*(int *)tid));
-	cjoin((*(int *)tid));
-	printf("Executando thread2 \n");
+	printf("Executando thread%d\n", (*(int *)tid +1));
 }
 
 int main(){
-	int tid1, tid2, oi;
+	int tid[N], oi, i;
 	oi = 8;
-	if((tid1 = ccreate((void* (*)(void*))printa, (void *)&oi, 1)))
+	if((tid[0] = ccreate((void* (*)(void*))printa, (void *)&oi, 1)))
 		printf("Sucesso TID1\n");
 	else printf("Erro TID1");
-	if((tid2 = ccreate((void* (*)(void*))socorro, (void *)&tid1, 0)))
-		printf("Sucesso TID2\n");
-	else printf("Erro TID2");
-	
-	if(cjoin(tid2) == SUCESSO){
+
+	for(i = 1; i <= N-1; i++){
+		if((tid[i] = ccreate((void* (*)(void*))socorro, (void *)&tid[i-1], 0)))
+			printf("Sucesso TID%d\n", i+1);
+		else printf("Erro TID%d\n", i+1);
+	}
+
+	if(cjoin(tid[0]) == SUCESSO){
 		printf("Sucesso no teste da cjoin.\n");
 		return 0;
 	}
