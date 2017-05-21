@@ -89,7 +89,9 @@ int csem_init(csem_t *sem, int count){
 int cyield(){
 	
 	if(esc == NULL)
-		init_lib();TCB_t * TCB;
+		init_lib();
+	
+	TCB_t * TCB;
 
 	TCB = esc->executando;
 	put_aptos(TCB);
@@ -108,9 +110,7 @@ int cjoin(int tid){
 	
 	if(esc->executando->tid == tid){
 		printf("A thread %d esta esperando por ela mesmo para terminar\n", tid);
-		printf("Terminando a execução do programa...\n");
-		printf("Conserte isso, por favor.\n");
-		exit(-1);
+		return -1;
 	}
 
 	if(thread != NULL && !has_blocked_by(tid)){
