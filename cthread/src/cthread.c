@@ -73,13 +73,15 @@ int csetprio(int tid, int prio){
 }
 
 int csem_init(csem_t *sem, int count){
-    
 	//biblioteca ainda não inicializada	
 	if(esc == NULL)
-		init_lib();	
+		init_lib();
+	//Aloca espaço para fila e atribui contador
 	sem->fila = (PFILA2) malloc(sizeof(PFILA2));
 	if(CreateFila2(sem->fila)!=SUCESSO) return ERRO;
 	sem->count = count;
+	
+	//Adiciona semáforo à lista do escalonador
 	if(AppendFila2(esc->semaforos, (void*) sem) != 0){
         	return ERRO;
 	}
@@ -142,15 +144,21 @@ int cwait(csem_t *sem){
 	
 	//Não existe esse escalonador
 	if(sem == NULL) return ERRO;
+	
+	//Se houver recursos, apenas decrementa
     	if(sem->count > 0) {
 		sem->count --;
 		return SUCESSO;
 	}
+	
+	//Se não houver recursos, adiciona à lista de bloqueados do semáforo e decrementa
 	if(AppendFila2(sem->fila,(void *) esc->executando) != 0) {
 		printf("Erro ao inserir na fila de bloqueados.\n");
 		return ERRO;
 	}
 	sem->count --;
+	
+	//Transforma a thread em bloqueada e chaveia de contexto
 	esc->executando->state = PROCST_BLOQ;
 	if(dispatcher() != ERRO) return SUCESSO;
 	return ERRO;
@@ -159,6 +167,7 @@ int cwait(csem_t *sem){
 int csignal(csem_t *sem){
 	csem_t *atual;
 	int achou = 0;
+	
 	//Biblioteca não inicializada, não há semáforo algum.
     	if(esc==NULL)  {
 		init_lib();
@@ -171,14 +180,16 @@ int csignal(csem_t *sem){
 	//Verifica o primeiro da fila
 	FirstFila2(esc->semaforos);
 	atual = (csem_t*) GetAtIteratorFila2(esc->semaforos);
+	
 	while(achou != 1 && atual != NULL){
-		if(atual == sem) {
+		if(atual == sem) { //Se o semáforo estiver na lista do escalonador
 			//Pega a 1ª thread da fila do semáforo (se houver) e a põe em aptos
 			if(FirstFila2(sem->fila) == SUCESSO) {
 				if(put_aptos((TCB_t*)GetAtIteratorFila2(sem->fila))!=SUCESSO)
 					printf("Erro ao inserir a thread em aptos.\n");
 				DeleteAtIteratorFila2(sem->fila);
 			}
+			//Libera o recurso
 			sem->count ++;
 			achou = 1;
 		}
@@ -188,6 +199,7 @@ int csignal(csem_t *sem){
 			atual = (csem_t*) GetAtIteratorFila2(esc->semaforos);
 		}
 	}
+	//Se o semáforo não estiver na lista do escalonador
 	if(achou!=1) {
 		printf("Semaforo inserido nao existe.\n");
 		return ERRO;
