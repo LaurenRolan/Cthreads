@@ -69,16 +69,13 @@ int csetprio(int tid, int prio){
 
 }
 
-int csem_init(csem_t *sem, int count){ //Não funciona como deveria
+int csem_init(csem_t *sem, int count){
     
 	//biblioteca ainda não inicializada	
 	if(esc == NULL)
 		init_lib();	
-	if(count < 0) {
-		printf("Valor invalido.\n");
-		return ERRO;
-	}
 	sem->fila = (PFILA2) malloc(sizeof(PFILA2));
+	if(CreateFila2(sem->fila)!=SUCESSO) return ERRO;
 	sem->count = count;
 	if(AppendFila2(esc->semaforos, (void*) sem) != 0){
         	return ERRO;
@@ -119,7 +116,15 @@ int cjoin(int tid){
 }
 
 
-int cwait(csem_t *sem){ //não testada
+int cwait(csem_t *sem){
+	//Biblioteca não inicializada, não há semáforo algum.
+	if(esc == NULL) {
+		init_lib();
+		return ERRO;
+	}
+	
+	//Não existe esse escalonador
+	if(sem == NULL) return ERRO;
     	if(sem->count > 0) {
 		sem->count --;
 		return SUCESSO;
@@ -137,7 +142,10 @@ int csignal(csem_t *sem){
 	csem_t *atual;
 	int achou = 0;
 	//Biblioteca não inicializada, não há semáforo algum.
-    	if(esc==NULL) return ERRO;
+    	if(esc==NULL)  {
+		init_lib();
+		return ERRO;
+	}
 	
 	//Semáforo não foi alocado
 	if(sem==NULL) return ERRO;
