@@ -15,6 +15,7 @@ void socorro(void *tid){
 int main(){
 	int tid[N], oi, i;
 	oi = 8;
+	printf("%d \n", cjoin(0));
 	if((tid[0] = ccreate((void* (*)(void*))printa, (void *)&oi, 1)))
 		printf("Sucesso TID1\n");
 	else printf("Erro TID1");

@@ -102,9 +102,16 @@ int cjoin(int tid){
 	
 	if(esc == NULL)
 		init_lib();
-
+	
 	//procurar por thread nas estruturas disponíveis ---> TCB_t *searchThread(int tid)
 	thread = search_thread(tid);
+	
+	if(esc->executando->tid == tid){
+		printf("A thread %d esta esperando por ela mesmo para terminar\n", tid);
+		printf("Terminando a execução do programa...\n");
+		printf("Conserte isso, por favor.\n");
+		exit(-1);
+	}
 
 	if(thread != NULL && !has_blocked_by(tid)){
 		TCB = esc->executando;
