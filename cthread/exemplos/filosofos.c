@@ -1,16 +1,16 @@
 //
-// Philosophers.c: Este programa implementa um dos classicos de programação
-//                 concorrente: a janta dos filósofos.
-//                 O objetivo deste programa é testar a implementação do
+// Philosophers.c: Este programa implementa um dos classicos de programaï¿½ï¿½o
+//                 concorrente: a janta dos filï¿½sofos.
+//                 O objetivo deste programa ï¿½ testar a implementaï¿½ï¿½o do
 //                 micro kernel desenvolvido na disciplina INF01142
 //
 // Primitivas testadas: ccreate, cjoin, cyield, cwait e csignal.
 // 
-// Este programa é basedo na solução de Tanenbaum apresentada no livro
+// Este programa ï¿½ basedo na soluï¿½ï¿½o de Tanenbaum apresentada no livro
 // "Modern Operating System" (Prentice Hall International).
 //
 // Disclamer: este programa foi desenvolvido para auxiliar no desenvolvimento
-//            de testes para o micronúcleo. NÃO HÁ garantias de estar correto.
+//            de testes para o micronï¿½cleo. Nï¿½O Hï¿½ garantias de estar correto.
 
 
 #include <stdio.h>
@@ -147,3 +147,4 @@ int	main(int argc, char *argv[]) {
 	
 	return 0;   
 }
+
