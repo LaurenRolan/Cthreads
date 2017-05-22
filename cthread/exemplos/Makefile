@@ -35,7 +35,7 @@ testSupport.o: testSupport.c
 testSupport: testSupport.o $(BIN_DIR)/support.o
 	$(CC) -Wall -g -o testSupport testSupport.o $(BIN_DIR)/support.o
 clean:
-	rm -rf exemplo mandel teste_vetor barbeiro filosofos prodcons series *.o *~
+	rm -rf testSupport exemplo mandel teste_vetor barbeiro filosofos prodcons series *.o *~
 
 
 

@@ -7,7 +7,7 @@ void* func1(void * a){
 	printf("1.8.\tEle era, como todos gatos,\n");
 	csetprio(esc->executando->tid,3);
 	cyield();
-	printf("11.\tNo entanto, havia um rato,\n");
+	printf("11.13.\tNo entanto, havia um rato,\n");
 	return NULL;
 }
 
@@ -33,7 +33,7 @@ void* func4( void*a){
 	printf("10.\tE para isso o gato falava:\n");
 	csetprio(4,1);
 	cyield();
-	printf("14.\tMal sabiam eles que na verdade todos eram\n");
+	printf("15.\tMal sabiam eles que na verdade todos eram\n");
 	return NULL;
 }
 
@@ -41,7 +41,7 @@ void* func5(void *a){
 
 	printf("12.\tQue nao sabia nada sobre gatos:\n");
 	cyield();	
-	printf("15.\tGatos e ratos\n");
+	printf("16.\tGatos e ratos\n");
 	return NULL;
 }
 
@@ -64,9 +64,9 @@ int main(){
 	csetprio(0, 3);
 
 	cyield();
-	printf("13.\tQue devia mesmo era voltar a ser um rato.\n");
+	printf("14.\tQue devia mesmo era voltar a ser um rato.\n");
 	cyield();
-	printf("16.\tE seres vivos também.\n");
+	printf("17.\tE seres vivos também.\n");
 	
 	return 0;
 }

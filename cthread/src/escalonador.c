@@ -9,12 +9,18 @@ escalonador* esc;
 int init_escalonador(){
 	int i;
 
+	//Se o escalonador nao foi inicializado ainda
 	if(esc == NULL){
-		esc = (escalonador *) malloc(sizeof(escalonador));	
+		esc = (escalonador *) malloc(sizeof(escalonador));
+
+		if(esc == NULL)
+			return ERRO;
+	
 		esc->bloq_join = (PFILA2) malloc(sizeof(PFILA2));
 		esc->semaforos = (PFILA2) malloc(sizeof(PFILA2));
 		esc->tidCounter = 0;
-		
+	
+		//Cria contexto de termino de funcoes	
 		getcontext(&(esc->terminate));
 		esc->terminate.uc_stack.ss_sp = (char *)  malloc(SIGSTKSZ);
 		esc->terminate.uc_stack.ss_size = SIGSTKSZ;
@@ -64,6 +70,7 @@ int dispatcher(){
 	TCB_t* atual;
 	atual = esc->executando;	
 
+	//Passa por todas filas de aptos, da prioridade 0 a 3, procurando pela primeira thread disponível
 	for(i=0; i < PRIORIDADES; i++){
 		if(FirstFila2(esc->aptos[i]) != 0 && LastFila2(esc->aptos[i]) != 0)	//Verifica se a fila é vazia	
 			continue;
@@ -82,7 +89,8 @@ int dispatcher(){
 				}
 			}
 			else{		
-				//dispatcher foi chamado de dentro da terminate_thread				
+				//dispatcher foi chamado de dentro da terminate_thread, logo nao ha processo executando
+				//para fazer swap				
 				if(setcontext(&(temp->context)) == -1){
 					fprintf(stderr, "Erro ao mudar de contexto no dispatcher. Thread ID %d \n", temp->tid);
 					return ERRO;
@@ -130,6 +138,7 @@ void terminate_thread(){
 	//desalocar TCB 
 	free (esc->executando);	
 
+	//Retira thread do executando
 	esc->executando = NULL;
 
 	dispatcher();
@@ -183,6 +192,7 @@ TCB_t* search_thread(int tid){
 	return NULL;
 }
 
+/* Liberada processos bloqueados por join pela thread tid*/
 int free_blocked_by(int tid){
 
 	blocked* b;
@@ -235,7 +245,7 @@ void terminate_join(){
 }
 
 
-
+/* Funcao de debug, imprime todas thread nas filas do escalonador */
 void print_escalonador(){
 	TCB_t *t;
 	csem_t* s;
@@ -284,9 +294,11 @@ void print_escalonador(){
 	}
 }
 
+/* Funcao para verificação se thread já foi bloqueada por outra */
 int has_blocked_by(int tid){
 	blocked* b;
 
+	//Se a fila esta vazia ela nao tem ninguém bloqueado por ela
 	if(FirstFila2(esc->bloq_join) == 0)
 		do{
 			b = (blocked*) GetAtIteratorFila2(esc->bloq_join);

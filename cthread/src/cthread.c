@@ -14,12 +14,18 @@ int ccreate (void* (*start)(void*), void *arg, int prio){
 
 	TCB_t* t;	
 
+	//Alocando e inicializando TCB
 	t = malloc(sizeof(TCB_t));
+	
+	if(t == NULL)
+		return ERRO;
+	
 	t->ticket = prio;
 	esc->tidCounter = esc->tidCounter + 1;
 	t->tid = esc->tidCounter;
 	t->state = PROCST_CRIACAO;
 
+	//Inicializando funcao de término de thread
 	getcontext(&(t->context));
 	t->context.uc_stack.ss_sp = (char *) malloc(SIGSTKSZ);
 	t->context.uc_stack.ss_size = SIGSTKSZ;
@@ -27,23 +33,26 @@ int ccreate (void* (*start)(void*), void *arg, int prio){
 
 	makecontext(&(t->context), (void (*)(void))start, 1, arg);
 	
+	//Por fim, poe ela na fila de aptos
 	if(put_aptos(t) != 0)
 		return ERRO;
 	
 	return t->tid;
-
 }
 
 int csetprio(int tid, int prio){
 	
 	TCB_t *t, *search;
 
+	//Biblioteca ainda nao inicializada
 	if(esc == NULL)
 		init_lib();
 	
+	//Prioridade inválida
 	if(prio < 0 || prio > 3)
 		return ERRO;
 
+	//Procura a thread que quer modificar
 	t = search_thread(tid);
 	if(t == NULL)
 		return ERRO;	
@@ -56,6 +65,8 @@ int csetprio(int tid, int prio){
 			return ERRO;			//Essa fila de prioridade está vazia e não devia estar
 		do{
 			search = (TCB_t*) GetAtIteratorFila2(esc->aptos[t->ticket]);
+			
+			//se encontrou a thread, tem que deletar ela da fila antiga
 			if(search->tid == tid){
 				if(DeleteAtIteratorFila2(esc->aptos[t->ticket]) != 0)
 					return ERRO;
@@ -63,12 +74,14 @@ int csetprio(int tid, int prio){
 			}
 		}while(!NextFila2(esc->aptos[t->ticket]));
 		
+		//Muda prioridade da thread
 		t->ticket = prio;
 		
+		//E poe ela na nova fila de aptos
 		put_aptos(t);
 	}
 	else
-		t->ticket = prio;		
+		t->ticket = prio;
 
 	return SUCESSO;
 
@@ -92,39 +105,53 @@ int csem_init(csem_t *sem, int count){
 
 int cyield(){
 	
+	//Biblioteca ainda nao inicializada
 	if(esc == NULL)
 		init_lib();
 	
 	TCB_t * TCB;
 
+	//Poe a thread que estava executando em aptos
 	TCB = esc->executando;
 	put_aptos(TCB);
+
+	//E por fim chama o dispatcher
 	return dispatcher();
 }
 
 int cjoin(int tid){
 	TCB_t *TCB, *thread;
   	blocked* b;	
-	
+
+	//Biblioteca ainda nao inicializada	
 	if(esc == NULL)
 		init_lib();
 	
 	//procurar por thread nas estruturas disponíveis ---> TCB_t *searchThread(int tid)
 	thread = search_thread(tid);
 	
+	//Se a thread tentou esperar por ela mesma terminar ela nunca ira ser desbloqueada
+	//Logo isso acarreta em erro
 	if(esc->executando->tid == tid){
 		printf("A thread %d esta esperando por ela mesmo para terminar\n", tid);
 		return -1;
 	}
 
+	//Se a thread procurada existe e nao tem mais nenhuma thread sendo bloqueada por ela
 	if(thread != NULL && !has_blocked_by(tid)){
 		TCB = esc->executando;
 		TCB->state = PROCST_BLOQ;
 		b = (blocked*) malloc(sizeof(blocked));
+	
+		if(b == NULL)
+			return ERRO;
+
+		//Coloca thread na fila de bloqueados, estando bloqueada por 'tid'
 		b->tcb = TCB;
-		b->tid = tid;
+		b->tid = tid;		
 		AppendFila2(esc->bloq_join, (void *) b);
-	  		
+	  
+		//Muda a funcao de termino para a funcao de termino por join		
 		getcontext(thread->context.uc_link);
 		thread->context.uc_link->uc_stack.ss_sp = (char *)  malloc(SIGSTKSZ);
 		thread->context.uc_link->uc_stack.ss_size = SIGSTKSZ;
@@ -217,12 +244,14 @@ int cidentify (char *name, int size){
 	if(esc == NULL)
 		init_lib();
 
+	// Nao pode-se copiar um numero negativo de caracteres
 	if(size < 0)
 		return ERRO;
 
-
+	//Copia string para name
 	memcpy(name, str, size);
 
+	//Coloca sinalizacao de final de string
 	if(size == 0)
 		name[0] = '\0';
 	else
